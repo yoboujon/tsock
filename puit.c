@@ -9,7 +9,7 @@
 #include <errno.h>
 
 #define _OE_SOCKETS
-#define PORT_NUM    9000
+#define PORT_NUM    8000
 
 void initSocket();
 
