@@ -9,9 +9,10 @@
 #include <errno.h>
 
 #define _OE_SOCKETS
-#define PORT_NUM    8000
+#define PORT_NUM    9000
 
 void initSocket();
+void creationSocket(int *socketTemp);
 
 int sock;
 char buffer[1024];
@@ -20,14 +21,8 @@ struct sockaddr_in socketClient,socketServer;
 
 int main(void)
 {
-    if((sock=socket(AF_INET,SOCK_DGRAM,0)) == -1)
-    {
-        printf("échec création du socket\n");
-        exit(1);
-    }
-    memset(&socketClient, 0, sizeof(socketClient));
-    memset(&socketServer, 0, sizeof(socketServer));
-
+    
+    creationSocket(&sock);
     initSocket();
 
 
@@ -57,4 +52,18 @@ void initSocket()
         exit(1);
     }
     memcpy((char*)&(socketServer.sin_addr.s_addr),hp->h_addr_list[0],hp->h_length);
+}
+
+void creationSocket(int *socketTemp){
+
+if((*socketTemp=socket(AF_INET,SOCK_DGRAM,0)) == -1)
+    {
+        printf("échec création du socket\n");
+        exit(1);
+    }
+    memset(&socketClient, 0, sizeof(socketClient));
+    memset(&socketServer, 0, sizeof(socketServer));
+
+
+
 }
