@@ -11,26 +11,20 @@
 #define _OE_SOCKETS
 #define PORT_NUM    9000
 
-void initSocket();
+void initSocketAddr(struct sockaddr_in *socketServerTemp, int source);
+void creationSocket(int *socketTemp, struct sockaddr_in *socketTempStruct);
 
-int sock;
+
 char buffer[1024];
-struct hostent *hp;
-struct sockaddr_in socketServer;
+struct sockaddr_in socketClient;
 
 int main(void)
 {
-    if((sock=socket(AF_INET,SOCK_DGRAM,0)) == -1)
-    {
-        printf("échec création du socket\n");
-        exit(1);
-    }
-    memset(&socketServer, 0, sizeof(socketServer));
+    int sock;
+    creationSocket(&sock,&socketClient);
+    initSocketAddr(&socketClient,0);
 
-    initSocket();
-
-
-	if (bind(sock, (const struct sockaddr *)&socketServer, sizeof(socketServer)) < 0 )
+	if (bind(sock, (const struct sockaddr *)&socketClient, sizeof(socketClient)) < 0 )
 	{
 		perror("bind failed");
 		exit(EXIT_FAILURE);
@@ -46,9 +40,34 @@ int main(void)
     return 0;
 }
 
-void initSocket()
-{
-    socketServer.sin_family=AF_INET;
-    socketServer.sin_port=htons(PORT_NUM);
-    socketServer.sin_addr.s_addr=INADDR_ANY;
+void initSocketAddr(struct sockaddr_in *socketTempStruct, int source)
+{   
+    socketTempStruct->sin_family=AF_INET;
+    socketTempStruct->sin_port=htons(PORT_NUM);
+    if(source)
+    {   
+        struct hostent *hp;
+        if((hp = gethostbyname("localhost")) == NULL)
+        {
+            printf("erreur gethostbyname\n");
+            exit(1);
+        }
+        memcpy((char*)&(socketTempStruct->sin_addr.s_addr),hp->h_addr_list[0],hp->h_length);
+    }
+    else
+    {
+        socketTempStruct->sin_addr.s_addr=INADDR_ANY;
+
+    }
+}
+
+void creationSocket(int *socketTemp, struct sockaddr_in *socketTempStruct){
+
+if((*socketTemp=socket(AF_INET,SOCK_DGRAM,0)) == -1)
+    {
+        printf("échec création du socket\n");
+        exit(1);
+    }
+    memset(socketTempStruct, 0, sizeof(*socketTempStruct));
+
 }
