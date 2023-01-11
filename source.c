@@ -15,7 +15,7 @@ void initSocket();
 int sock;
 int lg_emis;
 struct hostent *hp;
-struct sockaddr_in socketServer;
+struct sockaddr_in socketClient;
 
 int main(void)
 {
@@ -24,9 +24,9 @@ int main(void)
         printf("échec création du socket\n");
         exit(1);
     }
-    memset(&socketServer, 0, sizeof(socketServer));
+    memset(&socketClient, 0, sizeof(socketClient));
     initSocket();
-    lg_emis=sendto(sock, "aaaaa", 6, 0, (struct sockaddr*)&socketServer, sizeof(socketServer));
+    lg_emis=sendto(sock, "aaaaa", 6, 0, (struct sockaddr*)&socketClient, sizeof(socketClient));
     printf("lgemis = %d\n",lg_emis);
     close(sock);
     return 0;
@@ -34,12 +34,12 @@ int main(void)
 
 void initSocket()
 {
-    socketServer.sin_family=AF_INET;
-    socketServer.sin_port=htons(PORT_NUM);
+    socketClient.sin_family=AF_INET;
+    socketClient.sin_port=htons(PORT_NUM);
     if((hp = gethostbyname("localhost")) == NULL)
     {
         printf("erreur gethostbyname\n");
         exit(1);
     }
-    memcpy((char*)&(socketServer.sin_addr.s_addr),hp->h_addr_list[0],hp->h_length);
+    memcpy((char*)&(socketClient.sin_addr.s_addr),hp->h_addr_list[0],hp->h_length);
 }

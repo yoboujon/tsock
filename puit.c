@@ -24,7 +24,6 @@ int main(void)
     creationSocket(&sock,&socketClient);
     initSocketAddr(&socketClient,0);
 
-
 	if (bind(sock, (const struct sockaddr *)&socketClient, sizeof(socketClient)) < 0 )
 	{
 		perror("bind failed");
@@ -32,9 +31,9 @@ int main(void)
 	}
 
     int n;
-    unsigned int lg_socketClient = sizeof(socketClient);
+    unsigned int lg_socketServer = sizeof(socketServer);
 
-    n = recvfrom(sock, (char *)buffer, 1024, 0, (struct sockaddr*) &socketClient,&lg_socketClient);
+    n = recvfrom(sock, (char *)buffer, 1024, 0, (struct sockaddr*) &socketServer,&lg_socketServer);
     buffer[n] = '\0';
     printf("Server : %s\n", buffer);
     close(sock);
