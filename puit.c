@@ -12,21 +12,20 @@
 #define PORT_NUM    9000
 
 void initSocketAddr(struct sockaddr_in *socketServerTemp, int source);
-void creationSocket(int *socketTemp);
+void creationSocket(int *socketTemp, struct sockaddr_in *socketTempStruct);
 
 
-int sock;
 char buffer[1024];
-struct sockaddr_in socketClient,socketServer;
+struct sockaddr_in socketClient;
 
 int main(void)
 {
-    
-    creationSocket(&sock);
-    initSocketAddr(&socketServer,0);
+    int sock;
+    creationSocket(&sock,&socketClient);
+    initSocketAddr(&socketClient,0);
 
 
-	if (bind(sock, (const struct sockaddr *)&socketServer, sizeof(socketServer)) < 0 )
+	if (bind(sock, (const struct sockaddr *)&socketClient, sizeof(socketClient)) < 0 )
 	{
 		perror("bind failed");
 		exit(EXIT_FAILURE);
@@ -44,11 +43,11 @@ int main(void)
 
 void initSocketAddr(struct sockaddr_in *socketTempStruct, int source)
 {   
-    struct hostent *hp;
     socketTempStruct->sin_family=AF_INET;
     socketTempStruct->sin_port=htons(PORT_NUM);
     if(source)
-    {
+    {   
+        struct hostent *hp;
         if((hp = gethostbyname("localhost")) == NULL)
         {
             printf("erreur gethostbyname\n");
@@ -59,18 +58,17 @@ void initSocketAddr(struct sockaddr_in *socketTempStruct, int source)
     else
     {
         socketTempStruct->sin_addr.s_addr=INADDR_ANY;
-    }
 
+    }
 }
 
-void creationSocket(int *socketTemp){
+void creationSocket(int *socketTemp, struct sockaddr_in *socketTempStruct){
 
 if((*socketTemp=socket(AF_INET,SOCK_DGRAM,0)) == -1)
     {
         printf("échec création du socket\n");
         exit(1);
     }
-    memset(&socketClient, 0, sizeof(socketClient));
-    memset(&socketServer, 0, sizeof(socketServer));
+    memset(socketTempStruct, 0, sizeof(*socketTempStruct));
 
 }
