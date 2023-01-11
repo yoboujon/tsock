@@ -16,7 +16,7 @@ void initSocket();
 int sock;
 char buffer[1024];
 struct hostent *hp;
-struct sockaddr_in socketClient,socketServer;
+struct sockaddr_in socketServer;
 
 int main(void)
 {
@@ -25,7 +25,6 @@ int main(void)
         printf("échec création du socket\n");
         exit(1);
     }
-    memset(&socketClient, 0, sizeof(socketClient));
     memset(&socketServer, 0, sizeof(socketServer));
 
     initSocket();
@@ -38,9 +37,9 @@ int main(void)
 	}
 
     int n;
-    unsigned int lg_socketClient = sizeof(socketClient);
+    unsigned int lg_socketServer = sizeof(socketServer);
 
-    n = recvfrom(sock, (char *)buffer, 1024, 0, (struct sockaddr*) &socketClient,&lg_socketClient);
+    n = recvfrom(sock, (char *)buffer, 1024, 0, (struct sockaddr*) &socketServer,&lg_socketServer);
     buffer[n] = '\0';
     printf("Server : %s\n", buffer);
     close(sock);
@@ -51,10 +50,5 @@ void initSocket()
 {
     socketServer.sin_family=AF_INET;
     socketServer.sin_port=htons(PORT_NUM);
-    if((hp = gethostbyname("localhost")) == NULL)
-    {
-        printf("erreur gethostbyname\n");
-        exit(1);
-    }
-    memcpy((char*)&(socketServer.sin_addr.s_addr),hp->h_addr_list[0],hp->h_length);
+    socketServer.sin_addr.s_addr=INADDR_ANY;
 }
