@@ -31,9 +31,9 @@ int main(void)
 	}
 
     int n;
-    unsigned int lg_socketServer = sizeof(socketServer);
+    unsigned int lg_socketServer = sizeof(socketClient);
 
-    n = recvfrom(sock, (char *)buffer, 1024, 0, (struct sockaddr*) &socketServer,&lg_socketServer);
+    n = recvfrom(sock, (char *)buffer, 1024, 0, (struct sockaddr*) &socketClient,&lg_socketServer);
     buffer[n] = '\0';
     printf("Server : %s\n", buffer);
     close(sock);
