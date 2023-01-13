@@ -8,7 +8,7 @@ int main (int argc, char **argv)
 	char *ipAddress;
 	extern char *optarg;
 	extern int optind;
-	int source = -1, nb_message = -1, c, tcp=1, port=9000; /* Nb de messages à envoyer ou à recevoir, par défaut : 10 en émission, infini en réception */
+	int source = -1, nb_message = -1, c, tcp=1, port=9000, tailleMessage; /* Nb de messages à envoyer ou à recevoir, par défaut : 10 en émission, infini en réception */
 	while ((c = getopt(argc, argv, "pn:su")) != -1) {
 		switch (c) {
 		case 'p':
@@ -24,6 +24,10 @@ int main (int argc, char **argv)
 				exit(1) ;
 			}
 			source = 1;
+			break;
+		case 'l':
+			tailleMessage =atoi(optarg);
+			exitMax(tailleMessage,1500);
 			break;
 		case 'n':
 			nb_message = atoi(optarg);
@@ -54,6 +58,6 @@ int main (int argc, char **argv)
 	else
 	{
 		//printf("Puit : %d\n",nb_message);
-		launchPuit(nb_message,tcp);
+		launchPuit(nb_message,tailleMessage,tcp);
 	}
 }
