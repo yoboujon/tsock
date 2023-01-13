@@ -2,21 +2,43 @@
 
 int launchPuit(int nombreMessage,int tailleMessage,int isTCP)
 {
-    int sock;
+    int sock,socketType;
     struct sockaddr_in socketPuit;
+    if(isTCP)
+    {
+        socketType=SOCK_STREAM;
+    }
+    else
+    {
+        socketType=SOCK_DGRAM;
+    }
 
-    if((sock=socket(AF_INET,SOCK_DGRAM,0)) == -1)
+    if((sock=socket(AF_INET,socketType,0)) == -1)
     {
         perror("[tsock] : fonction socket() : echec creation du socket\n");
         exit(EXIT_FAILURE);
     }
     initStructSocket(&socketPuit,0);
-	if (bind(sock, (const struct sockaddr *)&socketPuit, sizeof(socketPuit)) < 0 )
+	if (bind(sock, (struct sockaddr *)&socketPuit, sizeof(socketPuit)) < 0 )
 	{
 		perror("[tsock] : fonction bind() : echec du lien avec socket serveur.\n");
 		exit(EXIT_FAILURE);
 	}
-    receiveMultipleData(nombreMessage,tailleMessage,sock,socketPuit);
+    if(isTCP)
+    {
+        unsigned int longueurRecu = sizeof(socketPuit);
+        char messageRecu[30];
+        listen(sock,10);
+        int acceptValue = accept(sock,(struct sockaddr *)&socketPuit,&longueurRecu);
+        printf("AcceptValue = %d\n",acceptValue);
+        int tailleMessageRecu = read(acceptValue,messageRecu,sizeof(messageRecu));
+        messageRecu[tailleMessageRecu]='\0';
+        printf("Message TCP [%d] : %s\n",tailleMessageRecu,messageRecu);
+    }
+    else
+    {
+        receiveMultipleData(nombreMessage,tailleMessage,sock,socketPuit);
+    }
     close(sock);
     return 0;
 }

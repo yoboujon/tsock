@@ -9,7 +9,7 @@ int main (int argc, char **argv)
 	extern char *optarg;
 	extern int optind;
 	int source = -1, nb_message = -1, c, tcp=1, port=9000, tailleMessage; /* Nb de messages à envoyer ou à recevoir, par défaut : 10 en émission, infini en réception */
-	while ((c = getopt(argc, argv, "pn:su")) != -1) {
+	while ((c = getopt(argc, argv, "pn:sul:")) != -1) {
 		switch (c) {
 		case 'p':
 			if (source != -1) {
@@ -53,7 +53,7 @@ int main (int argc, char **argv)
 	if(source)
 	{
 		//printf("Source : %d\n",nb_message);
-		launchSource(nb_message,tcp);
+		launchSource(nb_message,tailleMessage,tcp);
 	}
 	else
 	{
