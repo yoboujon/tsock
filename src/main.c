@@ -1,4 +1,6 @@
-#include "tsock.h"
+#include "../header/tsock.h"
+#include "../header/puit.h"
+#include "../header/source.h"
 
 int main (int argc, char **argv)
 {
@@ -43,9 +45,11 @@ int main (int argc, char **argv)
 	if(source)
 	{
 		printf("Source : %d\n",nb_message);
+		launchSource(nb_message);
 	}
 	else
 	{
 		printf("Puit : %d\n",nb_message);
+		launchPuit(nb_message);
 	}
 }

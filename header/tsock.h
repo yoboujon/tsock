@@ -13,5 +13,8 @@
 
 void setNbMessage(int * nb, int source);
 void printInfo(int nb, int source);
+void initStructSocket(struct sockaddr_in *socketServerTemp, int source);
+
+#define PORT_NUM    9000
 
 #endif
