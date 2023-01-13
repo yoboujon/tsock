@@ -8,16 +8,17 @@ void setNbMessage(int * nb, int source)
 	}
 }
 
-void printInfo(int nb, int source)
+void printInfo(int nb, int source, int portNumber, char ipAddress[])
 {
 	if(source)
 	{
-		printf("tsock lance en mode source, nombre de tampons à envoyer : %d\n", nb);
+		printf("tsock lance en mode source, nombre de tampons à envoyer : %d\nPort : %d\t Adresse IP : %s\n", nb, portNumber, ipAddress);
 	}
 	else
 	{
 		printf("tsock lance en mode puit, nombre de tampons à recevoir :");
 		nb != -1 ? printf("%d\n", nb) : printf("infini\n");
+        printf("Port : %d\n",portNumber);
 	}
 }
 
@@ -41,4 +42,12 @@ void initStructSocket(struct sockaddr_in *socketTempStruct, int source)
         socketTempStruct->sin_addr.s_addr=INADDR_ANY;
 
     }
+}
+
+void getNonOtpArgs(char ** argv, int argc, int portNumber, char ** ipAddress)
+{
+    portNumber = atoi(argv[argc-2]);
+    *ipAddress = NULL;
+    *ipAddress = (char *)malloc(sizeof(argv[argc-1]));
+    strcpy(*ipAddress,argv[argc-1]);
 }
