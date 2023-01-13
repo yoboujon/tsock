@@ -40,7 +40,6 @@ void initStructSocket(struct sockaddr_in *socketTempStruct, int source)
     else
     {
         socketTempStruct->sin_addr.s_addr=INADDR_ANY;
-
     }
 }
 
@@ -50,4 +49,32 @@ void getNonOtpArgs(char ** argv, int argc, int portNumber, char ** ipAddress)
     *ipAddress = NULL;
     *ipAddress = (char *)malloc(sizeof(argv[argc-1]));
     strcpy(*ipAddress,argv[argc-1]);
+}
+
+void formatText(char * actualMessage, int num, int tailleMessage, char messageChar)
+{
+    char numBuffer[15];
+    sprintf(numBuffer, "%d", (num+1)%10000);
+    int numberLength=0;
+    while(numBuffer[numberLength] != '\0')
+    {
+        numberLength++;
+    }
+    for(int i=0;i<4-numberLength;i++)
+    {
+        actualMessage[i]=0x20;
+    }
+    for(int i=4-numberLength,j=0;i<4;i++,j++)
+    {
+        actualMessage[i]=numBuffer[j];
+    }
+    memset(actualMessage+4, messageChar, tailleMessage);
+}
+
+int exitMax(int var,int tailleMax){
+    if(var>1500){
+        printf("-l doit être <1500 \n");
+        exit(EXIT_FAILURE);
+    }
+    return 0;
 }
