@@ -13,10 +13,8 @@
 
 void setNbMessage(int * nb, int source);
 void printInfo(int nb, int source);
-void initSocketAddr(struct sockaddr_in *socketServerTemp, int source);
-void creationSocket(int *socketTemp, struct sockaddr_in *socketTempStruct);
+void initStructSocket(struct sockaddr_in *socketServerTemp, int source);
 
-#define _OE_SOCKETS
 #define PORT_NUM    9000
 
 #endif

@@ -1,4 +1,4 @@
-#include "tsock.h"
+#include "../header/tsock.h"
 
 void setNbMessage(int * nb, int source)
 {
@@ -21,8 +21,9 @@ void printInfo(int nb, int source)
 	}
 }
 
-void initSocketAddr(struct sockaddr_in *socketTempStruct, int source)
+void initStructSocket(struct sockaddr_in *socketTempStruct, int source)
 {   
+    memset(socketTempStruct, 0, sizeof(*socketTempStruct));
     socketTempStruct->sin_family=AF_INET;
     socketTempStruct->sin_port=htons(PORT_NUM);
     if(source)
@@ -40,14 +41,4 @@ void initSocketAddr(struct sockaddr_in *socketTempStruct, int source)
         socketTempStruct->sin_addr.s_addr=INADDR_ANY;
 
     }
-}
-
-void creationSocket(int *socketTemp, struct sockaddr_in *socketTempStruct)
-{
-    if((*socketTemp=socket(AF_INET,SOCK_DGRAM,0)) == -1)
-    {
-        printf("échec création du socket\n");
-        exit(1);
-    }
-    memset(socketTempStruct, 0, sizeof(*socketTempStruct));
 }
