@@ -1,6 +1,6 @@
 #include "../header/puit.h"
 
-int launchPuit(int nombreMessage)
+int launchPuit(int nombreMessage,int tailleMessage)
 {
     int sock;
     struct sockaddr_in socketPuit;
@@ -16,7 +16,7 @@ int launchPuit(int nombreMessage)
 		perror("[tsock] : fonction bind() : echec du lien avec socket serveur.\n");
 		exit(EXIT_FAILURE);
 	}
-    receiveMultipleData(nombreMessage,30,sock,socketPuit);
+    receiveMultipleData(nombreMessage,tailleMessage,sock,socketPuit);
     close(sock);
     return 0;
 }
@@ -46,3 +46,11 @@ int receiveMultipleData(int nombreMessages, int tailleMessage, int sock, struct 
     }
     return 0;
 }
+
+int exitMax(int var,int tailleMax){
+    if(var>1500){
+        printf("-l doit être <1500 \n");
+        exit(EXIT_FAILURE);
+    }
+    return 0;
+} 

@@ -9,7 +9,8 @@ int main (int argc, char **argv)
 	extern int optind;
 	int nb_message = -1; /* Nb de messages à envoyer ou à recevoir, par défaut : 10 en émission, infini en réception */
 	int source = -1 ; /* 0=puits, 1=source */
-	while ((c = getopt(argc, argv, "pn:s")) != -1) {
+	int tailleMessage; // -l 
+	while ((c = getopt(argc, argv, "pn:sl:")) != -1) {
 		switch (c) {
 		case 'p':
 			if (source != -1) {
@@ -24,6 +25,10 @@ int main (int argc, char **argv)
 				exit(1) ;
 			}
 			source = 1;
+			break;
+		case 'l':
+			tailleMessage =atoi(optarg);
+			exitMax(tailleMessage,1500);
 			break;
 		case 'n':
 			nb_message = atoi(optarg);
@@ -50,6 +55,6 @@ int main (int argc, char **argv)
 	else
 	{
 		printf("Puit : %d\n",nb_message);
-		launchPuit(nb_message);
+		launchPuit(nb_message,tailleMessage);
 	}
 }
