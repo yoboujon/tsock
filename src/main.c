@@ -8,7 +8,7 @@ int main (int argc, char **argv)
 	char *ipAddress;
 	extern char *optarg;
 	extern int optind;
-	int source = -1, nb_message = -1, c, tcp=1, port=9000, tailleMessage; /* Nb de messages à envoyer ou à recevoir, par défaut : 10 en émission, infini en réception */
+	int source = -1, nb_message = -1, c, tcp=1, port=9000, tailleMessage=-1; /* Nb de messages à envoyer ou à recevoir, par défaut : 10 en émission, infini en réception */
 	while ((c = getopt(argc, argv, "pn:sul:")) != -1) {
 		switch (c) {
 		case 'p':
@@ -44,6 +44,10 @@ int main (int argc, char **argv)
 		printf("-p|-s non present !\n");
 		printf(usageChar);
 		exit(1);
+	}
+	if(tailleMessage == -1)
+	{
+		tailleMessage = 30;
 	}
 
 	getNonOtpArgs(argv, argc, port, &ipAddress);

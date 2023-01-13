@@ -3,6 +3,6 @@
 #include "tsock.h"
 
 int launchSource(int nombreMessage,int tailleMessage,int isTCP);
-int sendMultipleData(int nombreMessages, int tailleMessage, int sock, struct sockaddr_in socketStruct);
+int sendMultipleData(int nombreMessages, int tailleMessage, int sock, struct sockaddr_in socketStruct, int isTCP);
 
 #endif
