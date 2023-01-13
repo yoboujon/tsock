@@ -10,10 +10,12 @@
 #include <netdb.h>
 #include <stdio.h>
 #include <errno.h>
+#include <string.h>
 
 void setNbMessage(int * nb, int source);
-void printInfo(int nb, int source);
+void printInfo(int nb, int source, int portNumber, char ipAddress[]);
 void initStructSocket(struct sockaddr_in *socketServerTemp, int source);
+void getNonOtpArgs(char ** argv, int argc, int portNumber, char * ipAddress[]);
 
 #define PORT_NUM    9000
 

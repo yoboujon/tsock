@@ -1,6 +1,6 @@
 #include "../header/puit.h"
 
-int launchPuit(int nombreMessage)
+int launchPuit(int nombreMessage,int isTCP)
 {
     int sock;
     struct sockaddr_in socketPuit;

@@ -1,6 +1,6 @@
 #include "../header/source.h"
 
-int launchSource(int nombreMessage)
+int launchSource(int nombreMessage, int isTCP)
 {
     int sock;
     struct sockaddr_in socketSource;
