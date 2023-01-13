@@ -41,11 +41,31 @@ int sendMultipleData(int nombreMessages, int tailleMessage, int sock, struct soc
     char sendingMessage[tailleMessage];
     for(int i=0;i<nombreMessages;i++)
     {
-        memset(sendingMessage, messageChar, tailleMessage*sizeof(char)+1);
+        formatText(sendingMessage,i,tailleMessage,messageChar);
         longueurEmis=sendto(sock, sendingMessage, tailleMessage, 0, (struct sockaddr*)&socketStruct, sizeof(socketStruct));
         sendingMessage[tailleMessage]='\0';
         printf("Source\tEnvoi n°%d (%d) :\t[%s]\n",i+1,longueurEmis,sendingMessage);
-        messageChar++;
+        messageChar>='z'?messageChar='a':messageChar++;
     }
     return 0;
+}
+
+void formatText(char * actualMessage, int num, int tailleMessage, char messageChar)
+{
+    char numBuffer[15];
+    sprintf(numBuffer, "%d", (num+1)%10000);
+    int numberLength=0;
+    while(numBuffer[numberLength] != '\0')
+    {
+        numberLength++;
+    }
+    for(int i=0;i<4-numberLength;i++)
+    {
+        actualMessage[i]=0x20;
+    }
+    for(int i=4-numberLength,j=0;i<4;i++,j++)
+    {
+        actualMessage[i]=numBuffer[j];
+    }
+    memset(actualMessage+4, messageChar, tailleMessage);
 }
