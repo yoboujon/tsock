@@ -8,32 +8,34 @@ void setNbMessage(int * nb, int source)
 	}
 }
 
-void printInfo(int nb, int source, int portNumber, char ipAddress[])
+void printInfo(int source, int isTCP, int nbMessage, int taille, int portNumber, char ipAddress[])
 {
 	if(source)
 	{
-		printf("tsock lance en mode source, nombre de tampons à envoyer : %d\nPort : %d\t Adresse IP : %s\n", nb, portNumber, ipAddress);
+		printf("tsock lance en mode source, nombre de messages à envoyer : %d\nTaille des messages : %d\nPort : %d\t Adresse IP : %s\n",nbMessage,taille,portNumber,ipAddress);
+        isTCP==1 ? printf("Mode de transmission : TCP\n") : printf("Mode de transmission : UDP\n");
 	}
 	else
 	{
-		printf("tsock lance en mode puit, nombre de tampons à recevoir :");
-		nb != -1 ? printf("%d\n", nb) : printf("infini\n");
-        printf("Port : %d\n",portNumber);
+		printf("tsock lance en mode puit, nombre de messages à recevoir :");
+		nbMessage != -1 ? printf("%d\n", nbMessage) : printf("infini\n");
+        printf("Taille des messages : %d\nPort : %d\t Adresse IP : %s\n",taille,portNumber,ipAddress);
+        isTCP==1 ? printf("Mode de transmission : TCP\n") : printf("Mode de transmission : UDP\n");
 	}
 }
 
-void initStructSocket(struct sockaddr_in *socketTempStruct, int source)
+void initStructSocket(struct sockaddr_in *socketTempStruct, int source, int port, char * ipAddress)
 {   
     memset(socketTempStruct, 0, sizeof(*socketTempStruct));
     socketTempStruct->sin_family=AF_INET;
-    socketTempStruct->sin_port=htons(PORT_NUM);
+    socketTempStruct->sin_port=htons(port);
     if(source)
     {   
         struct hostent *hp;
-        if((hp = gethostbyname("localhost")) == NULL)
+        if((hp = gethostbyname(ipAddress)) == NULL)
         {
             printf("erreur gethostbyname\n");
-            exit(1);
+            exit(EXIT_FAILURE);
         }
         memcpy((char*)&(socketTempStruct->sin_addr.s_addr),hp->h_addr_list[0],hp->h_length);
     }
@@ -43,9 +45,9 @@ void initStructSocket(struct sockaddr_in *socketTempStruct, int source)
     }
 }
 
-void getNonOtpArgs(char ** argv, int argc, int portNumber, char ** ipAddress)
+void getNonOtpArgs(char ** argv, int argc, int * portNumber, char ** ipAddress)
 {
-    portNumber = atoi(argv[argc-2]);
+    *portNumber = atoi(argv[argc-2]);
     *ipAddress = NULL;
     *ipAddress = (char *)malloc(sizeof(argv[argc-1]));
     strcpy(*ipAddress,argv[argc-1]);
