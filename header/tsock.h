@@ -11,14 +11,13 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <errno.h>
+#include <arpa/inet.h>
 
 void setNbMessage(int * nb, int source);
-void printInfo(int nb, int source, int portNumber, char ipAddress[]);
-void initStructSocket(struct sockaddr_in *socketServerTemp, int source);
-void getNonOtpArgs(char ** argv, int argc, int portNumber, char * ipAddress[]);
+void printInfo(int source, int isTCP, int nbMessage, int taille, int portNumber, char ipAddress[]);
+void initStructSocket(struct sockaddr_in *socketTempStruct, int source, int port, char * ipAddress);
+void getNonOtpArgs(char ** argv, int argc, int * portNumber, char * ipAddress[]);
 void formatText(char * actualMessage, int num, int tailleMessage, char messageChar);
 int exitMax(int var,int tailleMax);
-
-#define PORT_NUM    9000
 
 #endif

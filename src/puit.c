@@ -1,6 +1,6 @@
 #include "../header/puit.h"
 
-int launchPuit(int nombreMessage,int tailleMessage,int isTCP)
+int launchPuit(int nombreMessage,int tailleMessage,int isTCP,int port,char * ipAddress)
 {
     int sock,socketType;
     struct sockaddr_in socketPuit;
@@ -11,7 +11,7 @@ int launchPuit(int nombreMessage,int tailleMessage,int isTCP)
         perror("[tsock] : fonction socket() : echec creation du socket\n");
         exit(EXIT_FAILURE);
     }
-    initStructSocket(&socketPuit,0);
+    initStructSocket(&socketPuit,0,port,ipAddress);
 	if (bind(sock, (struct sockaddr *)&socketPuit, sizeof(socketPuit)) < 0 )
 	{
 		perror("[tsock] : fonction bind() : echec du lien avec socket serveur.\n");
