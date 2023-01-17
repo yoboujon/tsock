@@ -50,5 +50,16 @@ void afficheListeBAL(struct listeBAL listeActuel);
 
 struct elementBAL * existInListBAL(struct listeBAL listeActuel, int idRecepteur, bool * boolRetour);
 void nouveauMessage(struct listeBAL * b,int idEmetteur,int idRecepteur,char *data);
+/**
+ * @brief Récupère la liste de message d'un recepteur précis
+ * Attention de vérifier si la liste est vide -> si c'est le cas,
+ * alors le recepteur n'existe pas.
+ * 
+ * @param b liste de BoîteAuxLettres
+ * @param idRecepteur 
+ * @return struct listeMessage* 
+ */
+struct listeMessage * getMessages(struct listeBAL b, int idRecepteur);
+void formatListMessage(struct listeMessage l);
 
 #endif

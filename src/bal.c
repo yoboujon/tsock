@@ -8,7 +8,12 @@ int main(void){
     nouveauMessage(&boiteAuxLettres,1,2,"ok c'est fait. -Yohan");
     nouveauMessage(&boiteAuxLettres,3,1,"C'est trop, yohan me soule");
     nouveauMessage(&boiteAuxLettres,1,3,"Yoyo l'asticot");
+    nouveauMessage(&boiteAuxLettres,4,1,"Cool new mmsg");
     afficheListeBAL(boiteAuxLettres);
+    printf("--- Cote recepteur -> getMessages() ---\n");
+    afficheListeMessage(*getMessages(boiteAuxLettres,1));
+    printf("--- Cote recepteur -> formatListMessage() ---\n");
+    formatListMessage(*getMessages(boiteAuxLettres,1));
     return 0;
 }
 
@@ -129,7 +134,6 @@ void nouveauMessage(struct listeBAL * b,int idEmetteur,int idRecepteur,char *dat
 {
     bool testExistInList;
     struct elementBAL * elementNouveauMessage = existInListBAL(*b,idRecepteur,&testExistInList);
-    printf("testExistInList = %d\n",testExistInList);
     if(testExistInList)
     {
         ajoutListeMessage(elementNouveauMessage->BALActuel->actualMessages,creeMessage(data,idEmetteur));
@@ -139,5 +143,43 @@ void nouveauMessage(struct listeBAL * b,int idEmetteur,int idRecepteur,char *dat
         struct listeMessage * newListMessage = initListeMessage();
         ajoutListeMessage(newListMessage,creeMessage(data,idEmetteur));
         ajoutListeBAL(b,creerBAL(idRecepteur,newListMessage));
+    }
+}
+
+struct listeMessage * getMessages(struct listeBAL b, int idRecepteur)
+{
+    bool testExistInList;
+    struct elementBAL * elementGetMessage = existInListBAL(b,idRecepteur,&testExistInList);
+    if(testExistInList)
+    {
+        return elementGetMessage->BALActuel->actualMessages;
+    }
+    else
+    {
+        struct listeMessage * receiverDoesntExist = initListeMessage();
+    }
+}
+
+void formatListMessage(struct listeMessage l)
+{
+    struct elementMessage * elementFinal = l.fin;
+    struct elementMessage * elementCourant = l.courant;
+    while(elementFinal->suiv != elementCourant->suiv)
+    {
+        char numBuff[30];
+        sprintf(numBuff, "%d", (elementCourant->messageBALActuel->idEmetteur)%10000);
+        int tailleNum = strlen(numBuff);
+        char messageSend[elementCourant->messageBALActuel->tailleData+tailleNum+1];
+        for(int i=0;i<tailleNum;i++)
+        {
+            messageSend[i]=numBuff[i];
+        }
+        for(int i=tailleNum,j=0;i<tailleNum+elementCourant->messageBALActuel->tailleData;i++,j++)
+        {
+            messageSend[i]=elementCourant->messageBALActuel->data[j];
+        }
+        messageSend[elementCourant->messageBALActuel->tailleData+tailleNum+1]='\0';
+        printf("Data sent : %s\n",messageSend);
+        elementCourant=elementCourant->suiv;
     }
 }
