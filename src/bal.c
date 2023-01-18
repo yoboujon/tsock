@@ -157,6 +157,7 @@ struct listeMessage * getMessages(struct listeBAL b, int idRecepteur)
     else
     {
         struct listeMessage * receiverDoesntExist = initListeMessage();
+        return receiverDoesntExist;
     }
 }
 
