@@ -4,6 +4,7 @@
 
 int main (int argc, char **argv)
 {
+	testProtocol();
 	char usageChar[30]="usage: cmd [-p|-s][-n ##]\n";
 	char *ipAddress;
 	extern char *optarg;

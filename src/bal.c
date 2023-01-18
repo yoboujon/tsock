@@ -1,6 +1,6 @@
 #include "../header/bal.h"
 
-int main(void){
+int bal(void){
     struct listeMessage l = initListeMessage();
     messageBAL * messageBAL = creeMessage("Renvoi moi mon pdf asap. -Simon",1);
     ajoutListe(&l,messageBAL);

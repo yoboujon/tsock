@@ -25,5 +25,6 @@ struct elementMessage * initElementMessage(void);
 struct listeMessage initListeMessage(void);
 void ajoutListe(struct listeMessage * listeActuel,messageBAL * leMessage);
 void afficheListeMessage(struct listeMessage listeActuel);
+int bal(void);
 
 #endif
