@@ -20,4 +20,10 @@ void getNonOtpArgs(char ** argv, int argc, int * portNumber, char * ipAddress[])
 void formatText(char * actualMessage, int num, int tailleMessage, char messageChar);
 int exitMax(int var,int tailleMax);
 
+char * formatTextParam(int numEmetteur, int numRecepteur, int tailleMessage, int nbMessage);
+char * formatTextMessage(char * message, int tailleMessage);
+int convertion(int nbr,char *numbuffer);
+int gestionOffset(char *actualMessage,int encadrementHaut,int encadrementBas,int nbr);
+int testProtocol(void);
+
 #endif
