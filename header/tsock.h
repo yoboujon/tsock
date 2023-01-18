@@ -27,4 +27,6 @@ int convertion(int nbr,char *numbuffer);
 int gestionOffset(char *actualMessage,int encadrementHaut,int encadrementBas,int nbr);
 int testProtocol(void);
 
+int recuperationParam(char * msgParam);
+int int2String(char *msgParam, int offset);
 #endif
