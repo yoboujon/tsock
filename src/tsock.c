@@ -80,3 +80,61 @@ int exitMax(int var,int tailleMax){
     }
     return 0;
 }
+
+int testProtocol(void)
+{
+    char * msg;
+    msg=formatTextParam(7, 8, 64, 1);
+    printf("%s\n",msg);
+    msg=formatTextMessage("aaaaaa",6);
+    printf("%s\n",msg);
+    return 0;
+}
+
+
+char * formatTextParam(int numEmetteur, int numRecepteur, int tailleMessage, int nbMessage)
+{
+    char * actualMessage = malloc(sizeof(char)*16);
+    actualMessage[0]='1';
+    gestionOffset(actualMessage, 4,1,numEmetteur);
+    gestionOffset(actualMessage, 8,5,numRecepteur);
+    gestionOffset(actualMessage, 12,9,tailleMessage);
+    gestionOffset(actualMessage, 16,13,nbMessage);
+    return actualMessage;
+}
+
+char * formatTextMessage(char * message, int tailleMessage)
+{
+    char * actualMessage = malloc(sizeof(char)*(tailleMessage+1));
+    actualMessage[0]='0';
+    for(int i=1,j=0;i<tailleMessage+1;i++,j++)
+    {
+        actualMessage[i]=message[j];
+    }
+    return actualMessage;
+}
+
+int convertion(int nbr,char *numbuffer)
+{
+    sprintf(numbuffer, "%d", (nbr)%10000);
+    return 0;
+}
+
+int gestionOffset(char *actualMessage,int encadrementHaut,int encadrementBas,int nbr)
+{
+    int taillechaine=0;
+    char numbuffer[30];
+    convertion(nbr,numbuffer);
+    taillechaine=strlen(numbuffer);
+    for(int i=encadrementBas;i<encadrementHaut-taillechaine+1;i++)
+    {
+        actualMessage[i]=0x20;
+        
+    }
+    for(int i=encadrementHaut-taillechaine+1,j=0;i<encadrementHaut+1;i++,j++)
+    {
+        actualMessage[i]=numbuffer[j];
+        
+    }
+    return  encadrementHaut;
+}

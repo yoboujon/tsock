@@ -5,6 +5,7 @@
 int main (int argc, char **argv)
 {
 	char usageChar[100]="usage: cmd [-p|-s]|[-u][-u|-r ##|-e ##|-b][-n ##][-l ##] port ipAdress\n";
+	testProtocol();
 	char *ipAddress;
 	extern char *optarg;
 	extern int optind;

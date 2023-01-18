@@ -43,6 +43,7 @@ struct elementMessage * initElementMessage(void);
 struct listeMessage * initListeMessage(void);
 void ajoutListeMessage(struct listeMessage * listeActuel,messageBAL * leMessage);
 void afficheListeMessage(struct listeMessage listeActuel);
+int bal(void);
 
 BAL * creerBAL(int idRecepteur, struct listeMessage * messageRecepteur);
 struct elementBAL * initElementBAL(void);
