@@ -81,6 +81,7 @@ void modeEmetteur(int emetteur,int nombreMessage,int tailleMessage,int sock,stru
         actualMessage = formatTextMessage(sendingMessage,tailleMessage+1);
         longueurEmis = write(sock,actualMessage,tailleMessage+1);
         printAndVerif(actualMessage,tailleMessage+1,longueurEmis,i);
+        messageChar>='z'?messageChar='a':messageChar++;
     }
 }
 

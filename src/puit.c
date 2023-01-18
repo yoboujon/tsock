@@ -1,4 +1,5 @@
 #include "../header/puit.h"
+#include "../header/bal.h"
 
 int launchPuit(int nombreMessage,int tailleMessage,int isTCP,int port,char * ipAddress,int isBAL)
 {
@@ -36,8 +37,10 @@ int initSocket(int socketType, struct sockaddr_in * socketStruct, int port, char
 
 int modeBoiteAuxLettres(struct sockaddr_in socketStruct, int socketType, int port, char * ipAddress)
 {
-    char messageRecu[30+1];
-    int n, i=1, longueurRecu = sizeof(socketStruct),sock,oldSock;
+    struct listeBAL boiteAuxLettres = initListeBAL();
+    char paramRecu[16];
+    int n, longueurRecu = sizeof(socketStruct),sock,oldSock;
+    int param,emetteur,recepteur,tailleMessage,nbMessage;
     while(1)
     {
         n=1;
@@ -46,12 +49,14 @@ int modeBoiteAuxLettres(struct sockaddr_in socketStruct, int socketType, int por
         sock = accept(oldSock,(struct sockaddr *)&socketStruct,(socklen_t * restrict)&longueurRecu);
         while(n>0)
         {
-            n = read(sock,messageRecu,30);
-            messageRecu[n] = '\0';
+            n = read(sock,paramRecu,16);
+            recuperationParam(paramRecu,&param,&emetteur,&recepteur,&tailleMessage,&nbMessage);
+            char * messageRecu = malloc(sizeof(char)*tailleMessage);
+            n = read(sock,messageRecu,tailleMessage);
             if(n>0)
             {
-                printf("Puit\tReception n°%d (%d) :\t[%s]\n",i,n,messageRecu);
-                i++;
+                nouveauMessage(&boiteAuxLettres,emetteur,recepteur,messageRecu);
+                afficheListeBAL(boiteAuxLettres);
             }
         }
         close(sock);

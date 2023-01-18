@@ -89,35 +89,18 @@ int testProtocol(void)
     msg2=formatTextMessage("aaaaaa",6);
     printf("%s\n",msg2);
     
-    recuperationParam(msg);
+    //recuperationParam(msg);
     
     return 0;
 }
 
-int recuperationParam(char * msgParam)
+int recuperationParam(char * msgParam, int * messageOrPram, int * numEmetteurParam, int * numRecepeteurParam, int * numTailleMessageParam, int * nbMessageParam)
 {   
-    
-    int messageOrPram;
-    int numEmetteurParam;
-    int numRecepeteurParam;
-    int numTailleMessageParam;
-    int nbMessageParam;
-    printf("Message param %s\n",msgParam);
-    messageOrPram=msgParam[0]-0x30;
-    printf("messageOrPram = %d \n",messageOrPram);
-
-    numEmetteurParam = int2String(msgParam,1);
-    printf("Param Emetteur = %d\n",numEmetteurParam);
-
-    numRecepeteurParam= int2String(msgParam,5);
-    printf("Param numRecepeteurParam = %d\n",numRecepeteurParam);
-
-    numTailleMessageParam= int2String(msgParam,9);
-    printf("Param numTailleMessageParam = %d\n",numTailleMessageParam);
-
-    nbMessageParam=int2String(msgParam,13);
-    printf("Param nbMessageParam = %d\n",nbMessageParam);
-    
+    *messageOrPram=msgParam[0]-0x30;
+    *numEmetteurParam = int2String(msgParam,1);
+    *numRecepeteurParam= int2String(msgParam,5);
+    *numTailleMessageParam= int2String(msgParam,9);
+    *nbMessageParam=int2String(msgParam,13);
     return 0;
 }
 
