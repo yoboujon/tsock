@@ -94,7 +94,7 @@ int main (int argc, char **argv)
 	if(source)
 	{
 		//printf("Source : %d\n",nb_message);
-		launchSource(nb_message,tailleMessage,tcp,port,ipAddress);
+		launchSource(nb_message,tailleMessage,tcp,port,ipAddress,emetteur,recepteur);
 	}
 	else
 	{
