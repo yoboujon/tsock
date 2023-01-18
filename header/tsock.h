@@ -12,6 +12,7 @@
 #include <netdb.h>
 #include <errno.h>
 #include <arpa/inet.h>
+#include <stdbool.h>
 
 void setNbMessage(int * nb, int source);
 void printInfo(int source, int isTCP, int nbMessage, int taille, int portNumber, char ipAddress[]);
