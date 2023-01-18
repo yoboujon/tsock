@@ -3,7 +3,8 @@
 
 #include "tsock.h"
 
-int launchPuit(int nombreMessage,int tailleMessage,int isTCP,int port,char * ipAddress);
+int launchPuit(int nombreMessage,int tailleMessage,int isTCP,int port,char * ipAddress,int isBAL);
+int initSocket(int socketType, struct sockaddr_in * socketStruct, int port, char * ipAddress);
 int receiveMultipleData(int nombreMessages, int tailleMessage, int sock, struct sockaddr_in socketStruct, int isTCP);
 
 #endif

@@ -1,6 +1,6 @@
 #include "../header/bal.h"
 
-int main(void){
+int bal(void){
     struct listeBAL boiteAuxLettres = initListeBAL();
     nouveauMessage(&boiteAuxLettres,2,1,"Renvoi moi mon pdf asap. -Simon");
     nouveauMessage(&boiteAuxLettres,2,1,"Mon anniversaire c'est demain !");

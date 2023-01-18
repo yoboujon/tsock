@@ -3,6 +3,8 @@
 
 #include "tsock.h"
 
+int bal(void);
+
 typedef struct{
     char *data;
     int tailleData;
