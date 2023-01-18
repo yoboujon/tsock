@@ -83,14 +83,53 @@ int exitMax(int var,int tailleMax){
 
 int testProtocol(void)
 {
-    char * msg;
+    char * msg,*msg2;
     msg=formatTextParam(7, 8, 64, 1);
     printf("%s\n",msg);
-    msg=formatTextMessage("aaaaaa",6);
-    printf("%s\n",msg);
+    msg2=formatTextMessage("aaaaaa",6);
+    printf("%s\n",msg2);
+    
+    recuperationParam(msg);
+    
     return 0;
 }
 
+int recuperationParam(char * msgParam)
+{   
+    
+    int messageOrPram;
+    int numEmetteurParam;
+    int numRecepeteurParam;
+    int numTailleMessageParam;
+    int nbMessageParam;
+    printf("Message param %s\n",msgParam);
+    messageOrPram=msgParam[0]-0x30;
+    printf("messageOrPram = %d \n",messageOrPram);
+
+    numEmetteurParam = int2String(msgParam,1);
+    printf("Param Emetteur = %d\n",numEmetteurParam);
+
+    numRecepeteurParam= int2String(msgParam,5);
+    printf("Param numRecepeteurParam = %d\n",numRecepeteurParam);
+
+    numTailleMessageParam= int2String(msgParam,9);
+    printf("Param numTailleMessageParam = %d\n",numTailleMessageParam);
+
+    nbMessageParam=int2String(msgParam,13);
+    printf("Param nbMessageParam = %d\n",nbMessageParam);
+    
+    return 0;
+}
+
+int int2String(char *msgParam, int offset)
+{
+    int taille =4;
+    char buffEntier[taille];
+    for(int i=offset,j=0;i<=offset+taille;i++,j++){
+        buffEntier[j]=msgParam[i];
+    }
+    return atoi(buffEntier);
+}
 
 char * formatTextParam(int numEmetteur, int numRecepteur, int tailleMessage, int nbMessage)
 {
