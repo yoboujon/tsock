@@ -15,6 +15,8 @@ int launchSource(int nombreMessage,int tailleMessage,int isTCP,int port,char * i
     if(recepteur != -1)
     {
         printf("Mode Recepteur, recois : %d\n",recepteur);
+        connectTCP(sock,socketSource,sizeof(socketSource));
+        modeRecepteur(recepteur,sock,&socketSource,sizeof(socketSource));
         return 0;
     }
     if(emetteur != -1)
@@ -73,7 +75,8 @@ void modeEmetteur(int emetteur,int nombreMessage,int tailleMessage,int sock,stru
     char sendingMessage[tailleMessage],*paramMessage,*actualMessage,messageChar='a';
     for(int i=0;i<nombreMessage;i++)
     {
-        paramMessage = formatTextParam(1,emetteur,tailleMessage+1,nombreMessage);
+        //paramMessage = 2 pour un emetteur, 1 pour un recepteur
+        paramMessage = formatTextParam(2,1,emetteur,tailleMessage+1,nombreMessage);
         longueurEmis = write(sock,paramMessage,16);
         printAndVerif(paramMessage,16,longueurEmis,i);
 
@@ -83,6 +86,15 @@ void modeEmetteur(int emetteur,int nombreMessage,int tailleMessage,int sock,stru
         printAndVerif(actualMessage,tailleMessage+1,longueurEmis,i);
         messageChar>='z'?messageChar='a':messageChar++;
     }
+}
+
+void modeRecepteur(int recepteur,int sock,struct sockaddr_in * socketStruct,int tailleSocketStruct)
+{
+    int longueurEmis;
+    char *paramMessage;
+    paramMessage = formatTextParam(1,recepteur,1,0,0);
+    longueurEmis = write(sock,paramMessage,16);
+    printAndVerif(paramMessage,16,longueurEmis,0);
 }
 
 void printAndVerif(char * sendingMessage,int tailleMessage,int longueurEmis, int count)

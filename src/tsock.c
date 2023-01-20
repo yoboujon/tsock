@@ -84,13 +84,11 @@ int exitMax(int var,int tailleMax){
 int testProtocol(void)
 {
     char * msg,*msg2;
-    msg=formatTextParam(7, 8, 64, 1);
+    msg=formatTextParam(0,7, 8, 64, 1);
     printf("%s\n",msg);
     msg2=formatTextMessage("aaaaaa",6);
     printf("%s\n",msg2);
-    
     //recuperationParam(msg);
-    
     return 0;
 }
 
@@ -114,10 +112,10 @@ int int2String(char *msgParam, int offset)
     return atoi(buffEntier);
 }
 
-char * formatTextParam(int numEmetteur, int numRecepteur, int tailleMessage, int nbMessage)
+char * formatTextParam(int modeParam, int numEmetteur, int numRecepteur, int tailleMessage, int nbMessage)
 {
     char * actualMessage = malloc(sizeof(char)*16);
-    actualMessage[0]='1';
+    actualMessage[0]=modeParam+0x30;
     gestionOffset(actualMessage, 4,1,numEmetteur);
     gestionOffset(actualMessage, 8,5,numRecepteur);
     gestionOffset(actualMessage, 12,9,tailleMessage);

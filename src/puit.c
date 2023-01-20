@@ -1,5 +1,4 @@
 #include "../header/puit.h"
-#include "../header/bal.h"
 
 int launchPuit(int nombreMessage,int tailleMessage,int isTCP,int port,char * ipAddress,int isBAL)
 {
@@ -45,22 +44,40 @@ int modeBoiteAuxLettres(struct sockaddr_in socketStruct, int socketType, int por
     {
         n=1;
         oldSock = initSocket(socketType,&socketStruct,port,ipAddress);
+        printf("\n---init Socket !---\n");
         listen(oldSock,5);
         sock = accept(oldSock,(struct sockaddr *)&socketStruct,(socklen_t * restrict)&longueurRecu);
         while(n>0)
         {
             n = read(sock,paramRecu,16);
             recuperationParam(paramRecu,&param,&emetteur,&recepteur,&tailleMessage,&nbMessage);
-            char * messageRecu = malloc(sizeof(char)*tailleMessage);
-            n = read(sock,messageRecu,tailleMessage);
-            if(n>0)
+            switch(param)
             {
-                nouveauMessage(&boiteAuxLettres,emetteur,recepteur,messageRecu);
-                afficheListeBAL(boiteAuxLettres);
+                case 1:
+                    printf("Renvoi de la boite aux lettres en mode recepteur.");
+                    break;
+                case 2:
+                    printf("Reception de messages en mode emission.");
+                    receptionEmetteur(sock,tailleMessage,&n,emetteur,recepteur,&boiteAuxLettres);
+                    break;
+                default:
+                    printf("Message non reconnu.");
+                    break;
             }
         }
+        afficheListeBAL(boiteAuxLettres);
         close(sock);
         close(oldSock);
+    }
+}
+
+void receptionEmetteur(int sock, int tailleMessagePrevu, int * tailleMessageRecu, int emetteur, int recepteur, struct listeBAL *boiteAuxLettres)
+{
+    char * messageRecu = malloc(sizeof(char)*tailleMessagePrevu);
+    *tailleMessageRecu = read(sock,messageRecu,tailleMessagePrevu);
+    if(*tailleMessageRecu>0)
+    {
+        nouveauMessage(boiteAuxLettres,emetteur,recepteur,messageRecu);
     }
 }
 
