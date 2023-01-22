@@ -6,7 +6,7 @@
 int main (int argc, char **argv)
 {
 	char usageChar[100]="usage: cmd [-p|-s]|[-u][-u|-r ##|-e ##|-b][-n ##][-l ##] port ipAdress\n";
-	testProtocol();
+	//testProtocol();
 	//bal();
 	char *ipAddress;
 	extern char *optarg;
@@ -93,12 +93,10 @@ int main (int argc, char **argv)
 
 	if(source)
 	{
-		//printf("Source : %d\n",nb_message);
 		launchSource(nb_message,tailleMessage,tcp,port,ipAddress,emetteur,recepteur);
 	}
 	else
 	{
-		//printf("Puit : %d\n",nb_message);
 		launchPuit(nb_message,tailleMessage,tcp,port,ipAddress,isBAL);
 	}
 	return(EXIT_SUCCESS);

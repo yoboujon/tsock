@@ -1,10 +1,21 @@
 #include "../header/tsock.h"
 
+int testProtocol(void)
+{
+    char * msg,*msg2;
+    msg=formatTextParam(0,7, 8, 64, 1);
+    printf("%s\n",msg);
+    msg2=formatTextMessage("aaaaaa",6);
+    printf("%s\n",msg2);
+    //recuperationParam(msg);
+    return 0;
+}
+
 void setNbMessage(int * nb, int source)
 {
 	if((*nb == -1) && (source))
 	{
-		*nb = 10;
+		*nb = NBMESSAGE_DEFAULT;
 	}
 }
 
@@ -74,42 +85,11 @@ void formatText(char * actualMessage, int num, int tailleMessage, char messageCh
 }
 
 int exitMax(int var,int tailleMax){
-    if(var>1500){
+    if(var>tailleMax){
         printf("-l doit être <1500 \n");
         exit(EXIT_FAILURE);
     }
     return 0;
-}
-
-int testProtocol(void)
-{
-    char * msg,*msg2;
-    msg=formatTextParam(0,7, 8, 64, 1);
-    printf("%s\n",msg);
-    msg2=formatTextMessage("aaaaaa",6);
-    printf("%s\n",msg2);
-    //recuperationParam(msg);
-    return 0;
-}
-
-int recuperationParam(char * msgParam, int * messageOrPram, int * numEmetteurParam, int * numRecepeteurParam, int * numTailleMessageParam, int * nbMessageParam)
-{   
-    *messageOrPram=msgParam[0]-0x30;
-    *numEmetteurParam = int2String(msgParam,1);
-    *numRecepeteurParam= int2String(msgParam,5);
-    *numTailleMessageParam= int2String(msgParam,9);
-    *nbMessageParam=int2String(msgParam,13);
-    return 0;
-}
-
-int int2String(char *msgParam, int offset)
-{
-    int taille =4;
-    char buffEntier[taille];
-    for(int i=offset,j=0;i<=offset+taille;i++,j++){
-        buffEntier[j]=msgParam[i];
-    }
-    return atoi(buffEntier);
 }
 
 char * formatTextParam(int modeParam, int numEmetteur, int numRecepteur, int tailleMessage, int nbMessage)
@@ -134,17 +114,11 @@ char * formatTextMessage(char * message, int tailleMessage)
     return actualMessage;
 }
 
-int convertion(int nbr,char *numbuffer)
-{
-    sprintf(numbuffer, "%d", (nbr)%10000);
-    return 0;
-}
-
 int gestionOffset(char *actualMessage,int encadrementHaut,int encadrementBas,int nbr)
 {
     int taillechaine=0;
     char numbuffer[30];
-    convertion(nbr,numbuffer);
+    sprintf(numbuffer, "%d", (nbr)%10000);
     taillechaine=strlen(numbuffer);
     for(int i=encadrementBas;i<encadrementHaut-taillechaine+1;i++)
     {
@@ -156,5 +130,26 @@ int gestionOffset(char *actualMessage,int encadrementHaut,int encadrementBas,int
         actualMessage[i]=numbuffer[j];
         
     }
-    return  encadrementHaut;
+    return encadrementHaut;
+}
+
+int recuperationParam(char * msgParam, int * messageOrPram, int * numEmetteurParam, int * numRecepeteurParam, int * numTailleMessageParam, int * nbMessageParam)
+{   
+    *messageOrPram=msgParam[0]-0x30;
+    *numEmetteurParam =protocol2int(msgParam,1);
+    *numRecepeteurParam=protocol2int(msgParam,MAX_MESSAGE+1);
+    *numTailleMessageParam=protocol2int(msgParam,(2*MAX_MESSAGE)+1);
+    *nbMessageParam=protocol2int(msgParam,(3*MAX_MESSAGE)+1);
+    return 0;
+}
+
+int protocol2int(char * data, int offset)
+{
+    char buff[MAX_MESSAGE+1];
+    for(int i=offset,j=0;i<MAX_MESSAGE+offset;i++,j++)
+    {
+        buff[j]=data[i];
+    }
+    buff[MAX_MESSAGE+1]='\0';
+    return atoi(buff)%10000;
 }

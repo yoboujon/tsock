@@ -20,7 +20,6 @@ int bal(void){
 messageBAL * creeMessage(char *data,int idEmetteur)
 {
     messageBAL * message = malloc(sizeof(messageBAL));
-
     message->idEmetteur=idEmetteur;
     message->tailleData=strlen(data);
     message->data=(char*)malloc(sizeof(char)*message->tailleData);

@@ -53,10 +53,10 @@ int modeBoiteAuxLettres(struct sockaddr_in socketStruct, int socketType, int por
             recuperationParam(paramRecu,&param,&emetteur,&recepteur,&tailleMessage,&nbMessage);
             switch(param)
             {
-                case 1:
+                case MODE_RECEPTEUR:
                     printf("Renvoi de la boite aux lettres en mode recepteur.");
                     break;
-                case 2:
+                case MODE_EMIS:
                     printf("Reception de messages en mode emission.");
                     receptionEmetteur(sock,tailleMessage,&n,emetteur,recepteur,&boiteAuxLettres);
                     break;
