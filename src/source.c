@@ -75,8 +75,7 @@ void modeEmetteur(int emetteur,int nombreMessage,int tailleMessage,int sock,stru
     char sendingMessage[tailleMessage],*paramMessage,*actualMessage,messageChar='a';
     for(int i=0;i<nombreMessage;i++)
     {
-        //paramMessage = 2 pour un emetteur, 1 pour un recepteur
-        paramMessage = formatTextParam(2,1,emetteur,tailleMessage+1,nombreMessage);
+        paramMessage = formatTextParam(MODE_EMIS,1,emetteur,tailleMessage+1,nombreMessage);
         longueurEmis = write(sock,paramMessage,16);
         printAndVerif(paramMessage,16,longueurEmis,i);
 
@@ -92,7 +91,7 @@ void modeRecepteur(int recepteur,int sock,struct sockaddr_in * socketStruct,int 
 {
     int longueurEmis;
     char *paramMessage;
-    paramMessage = formatTextParam(1,recepteur,1,0,0);
+    paramMessage = formatTextParam(MODE_RECEPTEUR,recepteur,1,0,0);
     longueurEmis = write(sock,paramMessage,16);
     printAndVerif(paramMessage,16,longueurEmis,0);
 }
