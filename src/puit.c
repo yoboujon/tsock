@@ -34,7 +34,7 @@ int initSocket(int socketType, struct sockaddr_in * socketStruct, int port, char
     return sockReturn;
 }
 
-int modeBoiteAuxLettres(struct sockaddr_in socketStruct, int socketType, int port, char * ipAddress)
+void modeBoiteAuxLettres(struct sockaddr_in socketStruct, int socketType, int port, char * ipAddress)
 {
     struct listeBAL boiteAuxLettres = initListeBAL();
     char paramRecu[16];
