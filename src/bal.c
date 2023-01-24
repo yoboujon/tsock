@@ -41,6 +41,7 @@ struct listeMessage * initListeMessage(void)
     l->debut=initElementMessage();
     l->fin=initElementMessage();
     l->courant=initElementMessage();
+    l->nbMessages=0;
     return l;
 }
 
@@ -50,7 +51,8 @@ void ajoutListeMessage(struct listeMessage * listeActuel,messageBAL * leMessage)
     elementActuel->messageBALActuel=leMessage;                                                                                     
     elementActuel->suiv=listeActuel->courant;                                                                                        
     listeActuel->debut=elementActuel;                                                     
-    listeActuel->courant=elementActuel;                                                   
+    listeActuel->courant=elementActuel;
+    listeActuel->nbMessages=listeActuel->nbMessages+1;                                                   
 }
 
 void afficheListeMessage(struct listeMessage listeActuel)

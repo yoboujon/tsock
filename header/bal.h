@@ -57,6 +57,7 @@ struct listeMessage{
     struct elementMessage * debut;
     struct elementMessage * courant;
     struct elementMessage * fin;
+    int nbMessages;
 };
 
 /**
@@ -213,8 +214,8 @@ void nouveauMessage(struct listeBAL * b,int idEmetteur,int idRecepteur,char *dat
  * Attention de vérifier si la liste est vide -> si c'est le cas,
  * alors le recepteur n'existe pas.
  * 
- * @param b liste de BoîteAuxLettres
- * @param idRecepteur 
+ * @param b             struct listeBAL, liste de BoîteAuxLettres
+ * @param idRecepteur   int, id du recepteur
  * @return struct listeMessage* 
  */
 struct listeMessage * getMessages(struct listeBAL b, int idRecepteur);

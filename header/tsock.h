@@ -13,6 +13,7 @@
 #include <errno.h>
 #include <arpa/inet.h>
 #include <stdbool.h>
+#include "bal.h"
 
 #define NBMESSAGE_DEFAULT   10
 #define MAX_MESSAGE         4
@@ -95,17 +96,17 @@ int exitMax(int var,int tailleMax);
 
 /**
  * @brief Converti plusieurs paramètres en une chaîne de caractère. Couche protocolaire de l'application.
- * Sous la forme suivante : [messageType[1],numEmetteur[4],numRecepteur[4],tailleMessage[4],nbMessage[4]]
+ * Sous la forme suivante : [messageType[1],emetteur/recepteur[4],tailleMessage[4],nbMessage[4]]
  * @author Simon Paris
+ * @author Yohan Boujon
  * 
- * @param modeParam     int, MODE_PARAMETRE pour un paramètre pure, MODE_RECEPTEUR -> -r ##, MODE_EMIS -> -e ##.
- * @param numEmetteur   int, numéro de l'émetteur (-e ##, ou idEmetteur).
- * @param numRecepteur  int, numéro du recepteur (-r ##, ou idRecepteur).
- * @param tailleMessage int, taille du message à envoyer.
- * @param nbMessage     int, nombre de message à envoyer [inutilisé].
+ * @param modeParam         int, MODE_PARAMETRE pour un paramètre pure, MODE_RECEPTEUR -> -r ##, MODE_EMIS -> -e ##.
+ * @param emeteurRecepteur  int, numéro de l'émetteur (-e ##, ou idEmetteur) ou du recepteur (-r ##, ou idRecepteur).
+ * @param tailleMessage     int, taille du message à envoyer.
+ * @param nbMessage         int, nombre de message à envoyer [inutilisé].
  * @return char* chaîne de caractère à envoyer via TCP.
  */
-char * formatTextParam(int modeParam, int numEmetteur, int numRecepteur, int tailleMessage, int nbMessage);
+char * formatTextParam(int modeParam, int emeteurRecepteur, int tailleMessage, int nbMessage);
 
 /**
  * @brief Ajoute un numéro au début du message à envoyer.
@@ -142,16 +143,16 @@ int testProtocol(void);
 /**
  * @brief Récupération de chaque paramètres grâce à la trame précédente.
  * @author Simon Paris
+ * @author Yohan Boujon
  * 
  * @param msgParam              char *, chaîne reçue avant le message, couche protocolaire.
  * @param messageOrPram         int *, renvoi MODE_PARAM,MODE_SOURCE ou MODE_EMIS.
- * @param numEmetteurParam      int *, renvoi le numéro de l'émetteur. 
- * @param numRecepeteurParam    int *, renvoi le numéro du recepteur.
+ * @param numEmetteurRecepteur  int *, renvoi le numéro de l'émetteur/recepteur. 
  * @param numTailleMessageParam int *, renvoi la taille du message émis.
  * @param nbMessageParam        int *, renvoi le nombre de message a recevoir [Inutilisé]
  * @return int 
  */
-int recuperationParam(char * msgParam, int * messageOrPram, int * numEmetteurParam, int * numRecepeteurParam, int * numTailleMessageParam, int * nbMessageParam);
+int recuperationParam(char * msgParam, int * messageOrPram, int * numEmetteurRecepteur, int * numTailleMessageParam, int * nbMessageParam);
 
 /**
  * @brief converti une chaîne de caractère spécifique (protocolaire) en entiers avec une gestion d'offset.
@@ -164,5 +165,41 @@ int recuperationParam(char * msgParam, int * messageOrPram, int * numEmetteurPar
  * @return int nombre récupéré entre 0 et 9999.
  */
 int protocol2int(char * data, int offset);
+
+/**
+ * @brief Fonction simplifiée pour le connect() du mode TCP.
+ * @author Yohan Boujon
+ * 
+ * @param sock          int, le socket créé par avance
+ * @param socketStruct  struct sockaddr_in, structure du socket
+ * @param tailleSocket  int, sizeof(socketStruct)
+ */
+void connectTCP(int sock, struct sockaddr_in socketStruct, int tailleSocket);
+
+/**
+ * @brief Récupère la longueur émise par la fonction write() (TCP) ou sendto() (UDP)
+ * Si elle est égale à -1 : ferme le programme car l'envoi n'a pas pu être effectué.
+ * Sinon affiche les divers paramètres avec un compteur de message (count).
+ * @author Yohan Boujon
+ * 
+ * @param sendingMessage    char *, le message à envoyer 
+ * @param tailleMessage     int, la taille du message théorique
+ * @param longueurEmis      int, la taille du message à envoyer (-1 -> Erreur)
+ * @param count             int, compteur
+ */
+void printAndVerif(char * sendingMessage,int tailleMessage,int longueurEmis, int count);
+
+/**
+ * @brief Permet l'initialisation avec la primitive socket() ainsi qu'initStructSocket() à l'aide d'un port et d'une adresse IP.
+ * Fonction bind() est ensuite réalisée pour se connecter au serveur. Qu'on soit en mode UDP/TCP.
+ * @author Yohan Boujon
+ * 
+ * @param socketType    SOCK_STREAM pour TCP ou SOCK_DGRAM pour UDP
+ * @param socketStruct  struct sockaddr_in *, la structure du socket sous forme de pointeur
+ * @param port          int, numéro du port
+ * @param ipAddress     char *, adresse IP   
+ * @return int, renvoi le socket crée
+ */
+int initSocket(int socketType, struct sockaddr_in * socketStruct, int port, char * ipAddress);
 
 #endif

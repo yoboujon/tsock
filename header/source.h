@@ -33,15 +33,6 @@ int launchSource(int nombreMessage,int tailleMessage,int isTCP,int port,char * i
 int sendMultipleData(int nombreMessages, int tailleMessage, int sock, struct sockaddr_in * socketStruct, int sizeSocketStruct, int isTCP);
 
 /**
- * @brief Fonction simplifiée pour le connect() du mode TCP.
- * 
- * @param sock          int, le socket créé par avance
- * @param socketStruct  struct sockaddr_in, structure du socket
- * @param tailleSocket  int, sizeof(socketStruct)
- */
-void connectTCP(int sock, struct sockaddr_in socketStruct, int tailleSocket);
-
-/**
  * @brief Permet d'envoyer un/des message(s) avec une certaine taille spécifiquement
  * pour la boîte au lettres. Le numéro du recepteur (nommé emetteur ici) est précisé.
  * Une trame sera tout d'abord émise suivant le protocole de l'application avec la fonction formatTestParam()
@@ -57,25 +48,15 @@ void connectTCP(int sock, struct sockaddr_in socketStruct, int tailleSocket);
 void modeEmetteur(int emetteur,int nombreMessage,int tailleMessage,int sock,struct sockaddr_in * socketStruct,int tailleSocketStruct);
 
 /**
- * @brief Permet de recevoir les messages de la boite aux lettres à l'émetteur spécifié. Fonction non fonctionnelle pour le moment.
+ * @brief Permet de recevoir les messages de la boite aux lettres à l'émetteur spécifié.
  * 
  * @param recepteur             int, numéro du recepteur utilisateur donc de l'emetteur pour la boite aux lettres
  * @param sock                  int, numéro du socket crée par avance
  * @param socketStruct          struct sockaddr_in *, pointeur sur la structure socket
  * @param tailleSocketStruct    int, sizeof(*socketStruct)
+ * @param port                  int, numéro du port
+ * @param ipAddress             char *, adresse IP
  */
-void modeRecepteur(int recepteur,int sock,struct sockaddr_in * socketStruct,int tailleSocketStruct);
-
-/**
- * @brief Récupère la longueur émise par la fonction write() (TCP) ou sendto() (UDP)
- * Si elle est égale à -1 : ferme le programme car l'envoi n'a pas pu être effectué.
- * Sinon affiche les divers paramètres avec un compteur de message (count).
- * 
- * @param sendingMessage    char *, le message à envoyer 
- * @param tailleMessage     int, la taille du message théorique
- * @param longueurEmis      int, la taille du message à envoyer (-1 -> Erreur)
- * @param count             int, compteur
- */
-void printAndVerif(char * sendingMessage,int tailleMessage,int longueurEmis, int count);
+void modeRecepteur(int recepteur,int sock,struct sockaddr_in * socketStruct,int tailleSocketStruct,int port,char * ipAddress);
 
 #endif

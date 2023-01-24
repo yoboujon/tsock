@@ -19,18 +19,6 @@
 int launchPuit(int nombreMessage,int tailleMessage,int isTCP,int port,char * ipAddress,int isBAL);
 
 /**
- * @brief Permet l'initialisation avec la primitive socket() ainsi qu'initStructSocket() à l'aide d'un port et d'une adresse IP.
- * Fonction bind() est ensuite réalisée pour se connecter au serveur. Qu'on soit en mode UDP/TCP
- * 
- * @param socketType    SOCK_STREAM pour TCP ou SOCK_DGRAM pour UDP
- * @param socketStruct  struct sockaddr_in *, la structure du socket sous forme de pointeur
- * @param port          int, numéro du port
- * @param ipAddress     char *, adresse IP   
- * @return int, renvoi le socket crée
- */
-int initSocket(int socketType, struct sockaddr_in * socketStruct, int port, char * ipAddress);
-
-/**
  * @brief Pour un nombre de message donné (-1 -> infini) recevra des messages avec une taille précise.
  * à l'aide de isTCP utilise différente primitive (listen, accept et read pour TCP, recvfrom pour UDP)
  * Dans le cas d'UDP si nombreMessage = -1 (infini) écoutera à l'infini la source. Pour TCP fermera la connexion
@@ -70,5 +58,14 @@ void modeBoiteAuxLettres(struct sockaddr_in socketStruct, int socketType, int po
  * @param boiteAuxLettres       struct listeBAL*, pointeur visant la boite aux lettres
  */
 void receptionEmetteur(int sock, int tailleMessagePrevu, int * tailleMessageRecu, int emetteur, int recepteur, struct listeBAL *boiteAuxLettres);
+
+/**
+ * @brief à partir d'un socket, renvoi les messages dans la boite aux lettres pour un recepteur precis.
+ * 
+ * @param sock              int, socket premettant d'utiliser la primitive write().
+ * @param recepteur         int, id du recepteur.
+ * @param boiteAuxLettres   struct listeBAL, la boite aux lettres à renvoyer.
+ */
+void receptionRecepteur(int sock, int recepteur, struct listeBAL boiteAuxLettres);
 
 #endif

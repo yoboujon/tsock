@@ -17,57 +17,75 @@ int launchPuit(int nombreMessage,int tailleMessage,int isTCP,int port,char * ipA
     return 0;
 }
 
-int initSocket(int socketType, struct sockaddr_in * socketStruct, int port, char * ipAddress)
-{
-    int sockReturn;
-    if((sockReturn=socket(AF_INET,socketType,0)) == -1)
-    {
-        perror("[tsock] : fonction socket() : echec creation du socket\n");
-        exit(EXIT_FAILURE);
-    }
-    initStructSocket(socketStruct,0,port,ipAddress);
-	if (bind(sockReturn, (struct sockaddr *)socketStruct, sizeof(*socketStruct)) < 0 )
-	{
-		perror("[tsock] : fonction bind() : echec du lien avec socket serveur.\n");
-		exit(EXIT_FAILURE);
-	}
-    return sockReturn;
-}
-
 void modeBoiteAuxLettres(struct sockaddr_in socketStruct, int socketType, int port, char * ipAddress)
 {
     struct listeBAL boiteAuxLettres = initListeBAL();
-    char paramRecu[16];
-    int n, longueurRecu = sizeof(socketStruct),sock,oldSock;
-    int param,emetteur,recepteur,tailleMessage,nbMessage;
+    char paramRecu[13];
+    int n, longueurRecu = sizeof(socketStruct),sock,oldSock, trueTemp = 1,option=1;
+    int param,emetteurRecepteur,tailleMessage,nbMessage;
     while(1)
     {
         n=1;
         oldSock = initSocket(socketType,&socketStruct,port,ipAddress);
-        printf("\n---init Socket !---\n");
         listen(oldSock,5);
         sock = accept(oldSock,(struct sockaddr *)&socketStruct,(socklen_t * restrict)&longueurRecu);
+        close(oldSock);
         while(n>0)
         {
-            n = read(sock,paramRecu,16);
-            recuperationParam(paramRecu,&param,&emetteur,&recepteur,&tailleMessage,&nbMessage);
+            n = read(sock,paramRecu,13);
+            recuperationParam(paramRecu,&param,&emetteurRecepteur,&tailleMessage,&nbMessage);
             switch(param)
             {
                 case MODE_RECEPTEUR:
-                    printf("Renvoi de la boite aux lettres en mode recepteur.");
+                    close(sock);
+                    if((sock=socket(AF_INET,socketType,0)) == -1)
+                    {
+                        perror("[tsock] : fonction socket() : echec creation du socket\n");
+                        exit(EXIT_FAILURE);
+                    }
+                    initStructSocket(&socketStruct,1,port,ipAddress);
+                    /*On attend 1 seconde pour que la source lance un listen TCP*/
+                    sleep(1);
+                    /*On lance une connexion TCP et on envoit à l'aide de receptionRecepteur() les données*/
+                    connectTCP(sock,socketStruct,sizeof(socketStruct));
+                    receptionRecepteur(sock,emetteurRecepteur,boiteAuxLettres);
+                    /*Pour fermer le while on met n=-1*/
+                    n=-1;
                     break;
                 case MODE_EMIS:
-                    printf("Reception de messages en mode emission.");
-                    receptionEmetteur(sock,tailleMessage,&n,emetteur,recepteur,&boiteAuxLettres);
+                    receptionEmetteur(sock,tailleMessage,&n,1,emetteurRecepteur,&boiteAuxLettres);
                     break;
                 default:
-                    printf("Message non reconnu.");
+                    printf("Message non reconnu.\n");
                     break;
             }
         }
-        afficheListeBAL(boiteAuxLettres);
+        if(param == MODE_EMIS)
+        {
+            afficheListeBAL(boiteAuxLettres);
+        }
         close(sock);
-        close(oldSock);
+    }
+}
+
+void receptionRecepteur(int sock, int recepteur, struct listeBAL boiteAuxLettres)
+{
+    int longueurEmis,i=1;
+    char *paramMessage;
+    printf("\n--- Messages à renvoyer pour %d : ---\n",recepteur);
+    struct elementMessage * elementFinal = getMessages(boiteAuxLettres,recepteur)->fin;
+    struct elementMessage * elementCourant = getMessages(boiteAuxLettres,recepteur)->courant;
+    while(elementCourant->suiv != elementFinal->suiv)
+    {
+        paramMessage = formatTextParam(MODE_RECEPTEUR,recepteur,elementCourant->messageBALActuel->tailleData,getMessages(boiteAuxLettres,recepteur)->nbMessages);
+        printf("paramMessage [%d] = %s\n",i,paramMessage);
+        longueurEmis = write(sock,paramMessage,13);
+        printAndVerif(paramMessage,13,longueurEmis,i);
+
+        longueurEmis = write(sock,elementCourant->messageBALActuel->data,elementCourant->messageBALActuel->tailleData);
+        printAndVerif(elementCourant->messageBALActuel->data,elementCourant->messageBALActuel->tailleData,longueurEmis,i);
+        i++;
+        elementCourant=elementCourant->suiv;
     }
 }
 
