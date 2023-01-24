@@ -12,11 +12,10 @@
  * @param tailleMessage int, la taille de chacun de ces messages.
  * @param isTCP         int, 1 -> TCP, 0 -> UDP         
  * @param port          int, numéro du port
- * @param ipAddress     char *, adresse IP
  * @param isBAL         int, 1-> Mode Boite aux Lettres
  * @return int 0-> si réussite, autre sinon
  */
-int launchPuit(int nombreMessage,int tailleMessage,int isTCP,int port,char * ipAddress,int isBAL);
+int launchPuit(int nombreMessage,int tailleMessage,int isTCP,int port,int isBAL);
 
 /**
  * @brief Pour un nombre de message donné (-1 -> infini) recevra des messages avec une taille précise.
@@ -24,12 +23,12 @@ int launchPuit(int nombreMessage,int tailleMessage,int isTCP,int port,char * ipA
  * Dans le cas d'UDP si nombreMessage = -1 (infini) écoutera à l'infini la source. Pour TCP fermera la connexion
  * une fois la connexion finie [A améliorer].
  * 
- * @param nombreMessages 
- * @param tailleMessage 
- * @param sock 
- * @param socketStruct 
- * @param isTCP 
- * @return int 
+ * @param nombreMessage int, le nombre de message à envoyer.
+ * @param tailleMessage int, la taille de chacun de ces messages.
+ * @param sock          int, socket premettant d'utiliser la primitive readRecvFrom().
+ * @param socketStruct  struct sockaddr_in , la structure du socket.
+ * @param isTCP         int, 1 -> TCP, 0 -> UDP.
+ * @return int 0 si réussi.
  */
 int receiveMultipleData(int nombreMessages, int tailleMessage, int sock, struct sockaddr_in socketStruct, int isTCP);
 

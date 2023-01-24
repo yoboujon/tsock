@@ -56,12 +56,19 @@ void initStructSocket(struct sockaddr_in *socketTempStruct, int source, int port
     }
 }
 
-void getNonOtpArgs(char ** argv, int argc, int * portNumber, char ** ipAddress)
+void getNonOtpArgs(char ** argv, int argc, int * portNumber, char * ipAddress[], bool portOnly)
 {
-    *portNumber = atoi(argv[argc-2]);
-    *ipAddress = NULL;
-    *ipAddress = (char *)malloc(sizeof(argv[argc-1]));
-    strcpy(*ipAddress,argv[argc-1]);
+    if(portOnly)
+    {
+        *portNumber = atoi(argv[argc-1]);
+    }
+    else
+    {
+        *portNumber = atoi(argv[argc-2]);
+        *ipAddress = NULL;
+        *ipAddress = (char *)malloc(sizeof(argv[argc-1]));
+        strcpy(*ipAddress,argv[argc-1]);
+    }
 }
 
 void formatText(char * actualMessage, int num, int tailleMessage, char messageChar)

@@ -1,6 +1,6 @@
 #include "../header/puit.h"
 
-int launchPuit(int nombreMessage,int tailleMessage,int isTCP,int port,char * ipAddress,int isBAL)
+int launchPuit(int nombreMessage,int tailleMessage,int isTCP,int port,int isBAL)
 {
     int sock,socketType;
     struct sockaddr_in socketPuit;
@@ -11,11 +11,11 @@ int launchPuit(int nombreMessage,int tailleMessage,int isTCP,int port,char * ipA
     if(isBAL)
     {
         printf("Mode Boîte aux Lettres\n");
-        modeBoiteAuxLettres(socketPuit,SOCK_STREAM,port,ipAddress);
+        modeBoiteAuxLettres(socketPuit,SOCK_STREAM,port,"localhost");
         return 0;
     }
     /*Sinon on initialise le socket de base et on rentre dans receiveMultipleData() -> on ferme le socket avant*/
-    sock = initSocket(socketType,&socketPuit,port,ipAddress);
+    sock = initSocket(socketType,&socketPuit,port,"localhost");
     receiveMultipleData(nombreMessage,tailleMessage,sock,socketPuit,isTCP);
     close(sock);
     return 0;

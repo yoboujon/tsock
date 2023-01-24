@@ -69,8 +69,9 @@ void initStructSocket(struct sockaddr_in *socketTempStruct, int source, int port
  * @param argc          int, nombre d'arguments (IP -> argc-1 et Port -> argc-2)
  * @param portNumber    int *, numéro du port retourné
  * @param ipAddress     char **, pointeur faire une chaîne de caractère de l'adresse ip retournée
+ * @param portOnly      bool, mode portOnly pour -s ou -b
  */
-void getNonOtpArgs(char ** argv, int argc, int * portNumber, char * ipAddress[]);
+void getNonOtpArgs(char ** argv, int argc, int * portNumber, char * ipAddress[], bool portOnly);
 
 /**
  * @brief [utile pour source.c] à partir d'un numéro, d'un message et d'une taille
