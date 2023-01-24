@@ -152,13 +152,14 @@ int protocol2int(char * data, int offset)
     return atoi(buff)%10000;
 }
 
-void connectTCP(int sock, struct sockaddr_in socketStruct, int tailleSocket)
+int connectTCP(int sock, struct sockaddr_in socketStruct, int tailleSocket)
 {
-    if(connect(sock,(struct sockaddr *)&socketStruct,(socklen_t)tailleSocket) == -1)
+    int returnConnect = connect(sock,(struct sockaddr *)&socketStruct,(socklen_t)tailleSocket);
+    if(returnConnect == -1)
     {
         perror("[tsock] : fonction connect() : echec connexion\n");
-        exit(EXIT_FAILURE);
     };
+    return returnConnect;
 }
 
 void printAndVerif(char * sendingMessage,int tailleMessage,int longueurEmis, int count)
@@ -188,4 +189,35 @@ int initSocket(int socketType, struct sockaddr_in * socketStruct, int port, char
 		exit(EXIT_FAILURE);
 	}
     return sockReturn;
+}
+
+int openSocket(int socketType)
+{
+    int returnSock;
+    if((returnSock=socket(AF_INET,socketType,0)) == -1)
+    {
+        perror("[tsock] : fonction socket() : echec creation du socket\n");
+        exit(EXIT_FAILURE);
+    }
+    return returnSock;
+}
+
+int listenAndAccept(int sock, struct sockaddr_in * socketStruct, int * sizeSocketStruct, bool closeSocket)
+{
+    int listenStatus;
+    listenStatus = listen(sock,5);
+    if(listenStatus < 0)
+    {
+        perror("[tsock] : listen() failed.");
+    }
+    int returnSock = accept(sock,(struct sockaddr *)socketStruct,(socklen_t * restrict)sizeSocketStruct);
+    if(returnSock < 0)
+    {
+        perror("[tsock] : accept() failed.");
+    }
+    if(closeSocket)
+    {
+        close(sock);
+    }
+    return returnSock;
 }

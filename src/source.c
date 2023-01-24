@@ -88,9 +88,7 @@ void modeRecepteur(int recepteur,int sock,struct sockaddr_in * socketStruct,int 
 
     close(sock);
     oldSock = initSocket(SOCK_STREAM,socketStruct,port,ipAddress);
-    listen(oldSock,5);
-    sock = accept(oldSock,(struct sockaddr *)&socketStruct,(socklen_t * restrict)&tailleSocketStruct);
-    close(oldSock);
+    sock = listenAndAccept(oldSock,socketStruct,&tailleSocketStruct,true);
     while(i<nbMessage)
     {
         longueurEmis = read(sock,paramRecu,13);
@@ -100,4 +98,5 @@ void modeRecepteur(int recepteur,int sock,struct sockaddr_in * socketStruct,int 
         printAndVerif(messageRecu,tailleMessage,longueurEmis,i);
         i++;
     }
+    close(sock);
 }

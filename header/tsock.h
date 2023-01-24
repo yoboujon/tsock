@@ -174,7 +174,7 @@ int protocol2int(char * data, int offset);
  * @param socketStruct  struct sockaddr_in, structure du socket
  * @param tailleSocket  int, sizeof(socketStruct)
  */
-void connectTCP(int sock, struct sockaddr_in socketStruct, int tailleSocket);
+int connectTCP(int sock, struct sockaddr_in socketStruct, int tailleSocket);
 
 /**
  * @brief Récupère la longueur émise par la fonction write() (TCP) ou sendto() (UDP)
@@ -201,5 +201,24 @@ void printAndVerif(char * sendingMessage,int tailleMessage,int longueurEmis, int
  * @return int, renvoi le socket crée
  */
 int initSocket(int socketType, struct sockaddr_in * socketStruct, int port, char * ipAddress);
+
+/**
+ * @brief Ouvre un socket à l'aide d'un socketType
+ * 
+ * @param socketType    SOCK_STREAM pour TCP ou SOCK_DGRAM pour UDP
+ * @return int le socket créé
+ */
+int openSocket(int socketType);
+
+/**
+ * @brief utilise la fonction listen et accept de TCP pour créer un nouveau socket.
+ * 
+ * @param sock              int, le socket pour lancer la connexion.
+ * @param socketStruct      struct sockaddr_in*, la structure du socket sous forme de pointeur.
+ * @param sizeSocketStruct  int, sizeof(*socketStruct)
+ * @param closeSocket       bool, 1-> ferme le socket sock.
+ * @return int, le socket crée par accept().
+ */
+int listenAndAccept(int sock, struct sockaddr_in * socketStruct, int * sizeSocketStruct, bool closeSocket);
 
 #endif

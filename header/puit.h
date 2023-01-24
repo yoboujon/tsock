@@ -66,6 +66,20 @@ void receptionEmetteur(int sock, int tailleMessagePrevu, int * tailleMessageRecu
  * @param recepteur         int, id du recepteur.
  * @param boiteAuxLettres   struct listeBAL, la boite aux lettres à renvoyer.
  */
-void receptionRecepteur(int sock, int recepteur, struct listeBAL boiteAuxLettres);
+int receptionRecepteur(int sock, int socketType, struct sockaddr_in socketStruct, int port, int recepteur, struct listeBAL boiteAuxLettres);
+
+/**
+ * @brief Permet, à partir de isTCP de choisir la méthode d'envoi. 
+ * 
+ * @param sock          int,socket premettant d'utiliser la primitive read()/recvfrom().
+ * @param socketStruct  struct sockaddr_in, la structure du socket avec l'ip et le port.
+ * @param longueurRecu  int, sizeof(socketStruct)
+ * @param messageRecu   char*, la chaîne de caractère qui recevra le message, doit être allouée
+ * @param tailleMessage int, la longueur donnée par l'utilisateur
+ * @param isTCP         int, 1 -> TCP, 0 -> UDP  
+ * @param i             int, fonctionne comme un count pour le printf()
+ * @return int, renvoi la longueur n reçue par TCP/UDP.
+ */
+int readRecvFrom(int sock, struct sockaddr_in socketStruct, int longueurRecu, char * messageRecu, int tailleMessage, int isTCP, int i);
 
 #endif
