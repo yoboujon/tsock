@@ -95,6 +95,7 @@ void modeRecepteur(int recepteur,int sock,struct sockaddr_in * socketStruct,int 
         recuperationParam(paramRecu,&param,&emetteurRecepteur,&tailleMessage,&nbMessage);
         char * messageRecu = malloc(sizeof(char)*tailleMessage);
         longueurEmis = read(sock,messageRecu,tailleMessage);
+        printf("Emetteur : %d\t",emetteurRecepteur);
         printAndVerif(messageRecu,tailleMessage,longueurEmis,i);
         i++;
     }

@@ -27,6 +27,7 @@ void modeBoiteAuxLettres(struct sockaddr_in socketStruct, int socketType, int po
     Intiialisation de la taille de socketStruct pour les différentes fonctions.
     Création des 4 variables à récupérer dans la couche protocolaire.*/
     struct listeBAL boiteAuxLettres = initListeBAL();
+    struct listeIpTable * tabledIP = initListeIpTable();
     char paramRecu[13];
     int n, longueurRecu = sizeof(socketStruct),sock,oldSock;
     int param,emetteurRecepteur,tailleMessage,nbMessage;
@@ -50,7 +51,7 @@ void modeBoiteAuxLettres(struct sockaddr_in socketStruct, int socketType, int po
                     n=-1;
                     break;
                 case MODE_EMIS:
-                    receptionEmetteur(sock,tailleMessage,&n,1,emetteurRecepteur,&boiteAuxLettres);
+                    receptionEmetteur(sock,tailleMessage,&n,getEmetteurId(socketStruct,tabledIP),emetteurRecepteur,&boiteAuxLettres);
                     break;
                 default:
                     printf("Message non reconnu.\n");
@@ -60,7 +61,10 @@ void modeBoiteAuxLettres(struct sockaddr_in socketStruct, int socketType, int po
         /*Si on est en mode emis, le serveur affiche les données rentrées dans la boite aux lettres*/
         if(param == MODE_EMIS)
         {
+            printf("---Boîte aux Lettres actuel :---\n");
             afficheListeBAL(boiteAuxLettres);
+            printf("---Liste d'IP actuel :---\n");
+            afficheListeIpTable(*tabledIP);
         }
         /*On ferme le socket qu'il provienne du MODE_RECEPTEUR ou MODE_EMIS*/
         close(sock);
@@ -96,7 +100,7 @@ int receptionRecepteur(int sock, int socketType, struct sockaddr_in socketStruct
     Le message avec la taille correcte. On incrémente i pour l'affichage et on passe à l'élément suivant.*/
     while(elementCourant->suiv != elementFinal->suiv)
     {
-        paramMessage = formatTextParam(MODE_RECEPTEUR,recepteur,elementCourant->messageBALActuel->tailleData,getMessages(boiteAuxLettres,recepteur)->nbMessages);
+        paramMessage = formatTextParam(MODE_RECEPTEUR,elementCourant->messageBALActuel->idEmetteur,elementCourant->messageBALActuel->tailleData,getMessages(boiteAuxLettres,recepteur)->nbMessages);
         longueurEmis = write(sock,paramMessage,13);
         printAndVerif(paramMessage,13,longueurEmis,i);
 
@@ -167,4 +171,24 @@ int readRecvFrom(int sock, struct sockaddr_in socketStruct, int longueurRecu, ch
     messageRecu[n] = '\0';
     printf("Puit\tReception n°%d (%d) :\t[%s]\n",i,n,messageRecu);
     return n;
+}
+
+int getEmetteurId(struct sockaddr_in socketStruct, struct listeIpTable * tabledIp)
+{
+    bool isInTable;
+    char StripAddressStruct[INET_ADDRSTRLEN];
+    struct in_addr ipAddressStruct = ((struct sockaddr_in*)&socketStruct)->sin_addr;
+    inet_ntop( AF_INET, &ipAddressStruct, StripAddressStruct, INET_ADDRSTRLEN );
+    struct elementIpTable * returnEmetteurId = existInListIP(*tabledIp,StripAddressStruct,&isInTable);
+    if(isInTable)
+    {
+        printf("[trouve] : idEmetteur = %d",returnEmetteurId->actualIpTable->idEmetteur);
+        return returnEmetteurId->actualIpTable->idEmetteur;
+    }
+    else
+    {
+        printf("[non trouve] : idEmetteur = %d",tabledIp->taille+1);
+        ajoutListeIpTable(tabledIp,creeIpTable(StripAddressStruct,tabledIp->taille+1));
+        return tabledIp->taille;
+    }
 }

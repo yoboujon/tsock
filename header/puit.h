@@ -3,6 +3,7 @@
 
 #include "tsock.h"
 #include "bal.h"
+#include "iptable.h"
 
 /**
  * @brief Fonction principale pour le puit. Peut lancer en mode TCP/UDP avec la fonction receiveMultipleData()
@@ -80,5 +81,7 @@ int receptionRecepteur(int sock, int socketType, struct sockaddr_in socketStruct
  * @return int, renvoi la longueur n reçue par TCP/UDP.
  */
 int readRecvFrom(int sock, struct sockaddr_in socketStruct, int longueurRecu, char * messageRecu, int tailleMessage, int isTCP, int i);
+
+int getEmetteurId(struct sockaddr_in socketStruct, struct listeIpTable * tabledIp);
 
 #endif

@@ -61,7 +61,7 @@ void afficheListeMessage(struct listeMessage listeActuel)
     struct elementMessage * elementCourant = listeActuel.courant;
     while(elementCourant->suiv != elementFinal->suiv)
     {
-        printf("%s\n",elementCourant->messageBALActuel->data);
+        printf("Emetteur : %d\t Message : %s\n",elementCourant->messageBALActuel->idEmetteur,elementCourant->messageBALActuel->data);
         elementCourant=elementCourant->suiv;
     }
 }
