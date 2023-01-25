@@ -20,7 +20,6 @@ int bal(void){
 messageBAL * creeMessage(char *data,int idEmetteur)
 {
     messageBAL * message = malloc(sizeof(messageBAL));
-
     message->idEmetteur=idEmetteur;
     message->tailleData=strlen(data);
     message->data=(char*)malloc(sizeof(char)*message->tailleData);
@@ -42,6 +41,7 @@ struct listeMessage * initListeMessage(void)
     l->debut=initElementMessage();
     l->fin=initElementMessage();
     l->courant=initElementMessage();
+    l->nbMessages=0;
     return l;
 }
 
@@ -51,7 +51,8 @@ void ajoutListeMessage(struct listeMessage * listeActuel,messageBAL * leMessage)
     elementActuel->messageBALActuel=leMessage;                                                                                     
     elementActuel->suiv=listeActuel->courant;                                                                                        
     listeActuel->debut=elementActuel;                                                     
-    listeActuel->courant=elementActuel;                                                   
+    listeActuel->courant=elementActuel;
+    listeActuel->nbMessages=listeActuel->nbMessages+1;                                                   
 }
 
 void afficheListeMessage(struct listeMessage listeActuel)
@@ -60,7 +61,7 @@ void afficheListeMessage(struct listeMessage listeActuel)
     struct elementMessage * elementCourant = listeActuel.courant;
     while(elementCourant->suiv != elementFinal->suiv)
     {
-        printf("%s\n",elementCourant->messageBALActuel->data);
+        printf("Emetteur : %d\t Message : %s\n",elementCourant->messageBALActuel->idEmetteur,elementCourant->messageBALActuel->data);
         elementCourant=elementCourant->suiv;
     }
 }

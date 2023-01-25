@@ -5,8 +5,8 @@
 
 int main (int argc, char **argv)
 {
-	char usageChar[100]="usage: cmd [-p|-s]|[-u][-u|-r ##|-e ##|-b][-n ##][-l ##] port ipAdress\n";
-	testProtocol();
+	char usageChar[100]="usage: cmd [-p|-s][-u]|[-u|-r ##|-e ##|-b][-n ##][-l ##] port ipAdress\n";
+	//testProtocol();
 	//bal();
 	char *ipAddress;
 	extern char *optarg;
@@ -71,35 +71,37 @@ int main (int argc, char **argv)
 			break;
 		}
 	}
-	if (source == -1) {
+	bool serverMode = (isBAL || source==0);
+	if (source == -1){
 		printf("-p|-s non present !\n");
 		printf("%s",usageChar);
 		exit(EXIT_FAILURE);
 	}
-	if(argc != optind+2)
-	{
+	if((argc != optind+1) && serverMode){
+		printf("ip non present !\n");
+		printf("%s",usageChar);
+		exit(EXIT_FAILURE);
+	}
+	else if((argc != optind+2) && !serverMode){
 		printf("ip ou port non present !\n");
 		printf("%s",usageChar);
 		exit(EXIT_FAILURE);
 	}
 
-	if(tailleMessage == -1)
-	{
+	if(tailleMessage == -1){
 		tailleMessage = 30;
 	}
-	getNonOtpArgs(argv, argc, &port, &ipAddress);
+	getNonOtpArgs(argv, argc, &port, &ipAddress, serverMode);
 	setNbMessage(&nb_message,source);
-	printInfo(source,tcp,nb_message,tailleMessage,port,ipAddress);
+	serverMode ? printInfo(source,tcp,nb_message,tailleMessage,port,"non precise") : printInfo(source,tcp,nb_message,tailleMessage,port,ipAddress);
 
 	if(source)
 	{
-		//printf("Source : %d\n",nb_message);
 		launchSource(nb_message,tailleMessage,tcp,port,ipAddress,emetteur,recepteur);
 	}
 	else
 	{
-		//printf("Puit : %d\n",nb_message);
-		launchPuit(nb_message,tailleMessage,tcp,port,ipAddress,isBAL);
+		launchPuit(nb_message,tailleMessage,tcp,port,isBAL);
 	}
 	return(EXIT_SUCCESS);
 }

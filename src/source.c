@@ -15,6 +15,8 @@ int launchSource(int nombreMessage,int tailleMessage,int isTCP,int port,char * i
     if(recepteur != -1)
     {
         printf("Mode Recepteur, recois : %d\n",recepteur);
+        connectTCP(sock,socketSource,sizeof(socketSource));
+        modeRecepteur(recepteur,sock,&socketSource,sizeof(socketSource),port,ipAddress);
         return 0;
     }
     if(emetteur != -1)
@@ -35,15 +37,6 @@ int launchSource(int nombreMessage,int tailleMessage,int isTCP,int port,char * i
     }
     close(sock);
     return 0;
-}
-
-void connectTCP(int sock, struct sockaddr_in socketStruct, int tailleSocket)
-{
-    if(connect(sock,(struct sockaddr *)&socketStruct,(socklen_t)tailleSocket) == -1)
-    {
-        perror("[tsock] : fonction connect() : echec connexion\n");
-        exit(EXIT_FAILURE);
-    };
 }
 
 int sendMultipleData(int nombreMessages, int tailleMessage, int sock, struct sockaddr_in * socketStruct, int sizeSocketStruct, int isTCP)
@@ -73,23 +66,38 @@ void modeEmetteur(int emetteur,int nombreMessage,int tailleMessage,int sock,stru
     char sendingMessage[tailleMessage],*paramMessage,*actualMessage,messageChar='a';
     for(int i=0;i<nombreMessage;i++)
     {
-        paramMessage = formatTextParam(1,emetteur,tailleMessage+1,nombreMessage);
-        longueurEmis = write(sock,paramMessage,16);
-        printAndVerif(paramMessage,16,longueurEmis,i);
+        paramMessage = formatTextParam(MODE_EMIS,emetteur,tailleMessage+1,nombreMessage);
+        longueurEmis = write(sock,paramMessage,13);
+        printAndVerif(paramMessage,13,longueurEmis,i);
 
         memset(sendingMessage, messageChar, tailleMessage);
         actualMessage = formatTextMessage(sendingMessage,tailleMessage+1);
         longueurEmis = write(sock,actualMessage,tailleMessage+1);
         printAndVerif(actualMessage,tailleMessage+1,longueurEmis,i);
+        messageChar>='z'?messageChar='a':messageChar++;
     }
 }
 
-void printAndVerif(char * sendingMessage,int tailleMessage,int longueurEmis, int count)
+void modeRecepteur(int recepteur,int sock,struct sockaddr_in * socketStruct,int tailleSocketStruct,int port,char * ipAddress)
 {
-    if(longueurEmis == -1)
+    int longueurEmis,oldSock,param,emetteurRecepteur,tailleMessage,nbMessage=2,i=0;
+    char paramRecu[13];
+    char *paramMessage;
+    paramMessage = formatTextParam(MODE_RECEPTEUR,recepteur,0,0);
+    longueurEmis = write(sock,paramMessage,13);
+
+    close(sock);
+    oldSock = initSocket(SOCK_STREAM,socketStruct,port,ipAddress);
+    sock = listenAndAccept(oldSock,socketStruct,&tailleSocketStruct,true);
+    while(i<nbMessage)
     {
-        perror("[tsock] : fonction sendto()/write() : echec d'envoi\n");
-        exit(EXIT_FAILURE);
+        longueurEmis = read(sock,paramRecu,13);
+        recuperationParam(paramRecu,&param,&emetteurRecepteur,&tailleMessage,&nbMessage);
+        char * messageRecu = malloc(sizeof(char)*tailleMessage);
+        longueurEmis = read(sock,messageRecu,tailleMessage);
+        printf("Emetteur : %d\t",emetteurRecepteur);
+        printAndVerif(messageRecu,tailleMessage,longueurEmis,i);
+        i++;
     }
-    printf("Source\tEnvoi n°%d (%d) :\t[%s]\n",count+1,longueurEmis,sendingMessage);
+    close(sock);
 }
